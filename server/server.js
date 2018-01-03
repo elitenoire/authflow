@@ -2,8 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-//const models = require('./models');
-const authRouter = require('./routes/authRouter')
+const authRouter = require('./routes/auth')
+const demoRouter = require('./routes/demo')
 const { MONGO_URI } = require('./config')
 
 const app = express();
@@ -29,6 +29,8 @@ if (process.env.NODE_ENV === 'production') {
 
 // authentication route handler
 app.use('/auth', authRouter)
+
+app.use('/demo', demoRouter)
 
 
 if (process.env.NODE_ENV === 'production') {

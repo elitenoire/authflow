@@ -16,7 +16,6 @@ exports.signup = async (req, res, next) => {
         const oldUser = await User.findOne({ email })
         if(oldUser) return res.status(422).json({error: 'Email already exists.'})
         const newUser = await User.create({ email, password })
-        console.log(newUser)
         return res.status(200).json({
             token: generateToken(newUser),
             msg: 'Signup success'
@@ -26,6 +25,4 @@ exports.signup = async (req, res, next) => {
     catch(err) {
         return next(err) // res.status(500).send(err)
     }
-
-
 }
