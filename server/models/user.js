@@ -29,6 +29,17 @@ userSchema.pre('save', async function(next) {
     }
 })
 
+// Method to decrypt and compare attempted password to stored encrypted user password
+userSchema.methods.comparePassword = async function(password) {
+    try {
+        const isMatch = await bcrypt.compare(password, this.password)
+        return isMatch
+    }
+    catch(err) {
+        return err
+    }
+}
+
 // Model class
 const User = mongoose.model('users', userSchema)
 

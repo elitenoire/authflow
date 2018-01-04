@@ -7,6 +7,7 @@ const generateToken = user => {
     return jwt.encode({sub: user.id, iat: Date.now()}, JWT_SECRET)
 }
 
+//TODO: On signup use node mailer to send activation link 
 exports.signup = async (req, res, next) => {
     const email = req.body.email
     const password = req.body.password
@@ -25,4 +26,11 @@ exports.signup = async (req, res, next) => {
     catch(err) {
         return next(err) // res.status(500).send(err)
     }
+}
+
+exports.login = (req, res, next) => {
+    return res.status(200).json({
+        token: generateToken(req.user),
+        msg: 'Login successs'
+    })
 }
