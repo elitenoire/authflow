@@ -8,7 +8,7 @@ const requireAuth = passport.authenticate('jwt', {session: false})
 const verifyCreds = (req, res, next) => {
     passport.authenticate('local', {session: false}, (err, user, info) => {
         if(err) return next(err)
-        if(!user) return res.status(401).json({msg: info.message})
+        if(!user) return res.status(401).json({msg: info.message, type: info.type})
         req.user = user
         next()
     })(req, res, next)

@@ -34,6 +34,13 @@ const loginChecker = new LocalStrategy(loginOpts, async (email, password, done) 
         // Verify password
         const isMatch = await user.comparePassword(password)
         if(!isMatch) return done(null, false, {message: 'Invalid username/password'})
+        // Verify signup status
+        if(!user.isVerified) {
+            return done(null, false, {
+                type: 'NOT_VERIFIED',
+                message: 'Your account has not been verified'
+            })  
+        }
         return done(null, user)
     }
     catch(err) {

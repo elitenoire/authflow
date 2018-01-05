@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 
 // Model definition
 const userSchema = new Schema({
+    name: String,
     email: { 
         type: String,
         required: true,
@@ -12,7 +13,10 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true
     },
-    password: String
+    isVerified: { type: Boolean, default: false},
+    password: String,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 }, { timestamps: true })
 
 // Encrypt password (salt and hash) pre-save hook

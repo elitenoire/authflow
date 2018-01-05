@@ -1,5 +1,6 @@
 const jwt = require('jwt-simple')
 const User = require('../models/user')
+const Token = require('../models/token')
 const { JWT_SECRET } = require('../config')
 
 // utils
@@ -17,11 +18,14 @@ exports.signup = async (req, res, next) => {
         const oldUser = await User.findOne({ email })
         if(oldUser) return res.status(422).json({error: 'Email already exists.'})
         const newUser = await User.create({ email, password })
+        // send signup verification email
+        const token = new Token({_userId: newUser._id })
+        await token.sendVerificationToken(newUser)
+        // on successful email delivery
         return res.status(200).json({
             token: generateToken(newUser),
-            msg: 'Signup success'
+            msg: `Verification email sent to ${newUser.email}`
         })
-
     } 
     catch(err) {
         return next(err) // res.status(500).send(err)
