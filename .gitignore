@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 keys.js
+
+mjml.js
+snips.js
+snips2.js
+snips3.js

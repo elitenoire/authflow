@@ -27,21 +27,7 @@ tokenSchema.methods.sendVerificationToken = async function(user) {
         verificationToken.set('token', crypto.randomBytes(16).toString('hex') )
         const token = await verificationToken.save()
      
-        // send verification email
-        const transporter = nodemailer.createTransport({
-            service: 'Sendgrid',
-            auth: { user: SENDGRID_USERNAME, pass: SENDGRID_PASSWORD }
-            })
-        const mailOptions = {
-            from: 'no-reply@authflow.herokuapp.com',
-            to: user.email,
-            subject: 'Confirm your Authflow account with us',
-            text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' 
-            + req.headers.host + '\/auth\/confirm\/' + token.token + '.\n'
-            }        
-        transporter.sendMail(mailOptions, function (err) {
-            // do something
-        })
+       
     }
     catch(err) {
         return err
