@@ -19,8 +19,9 @@ exports.signup = async (req, res, next) => {
         if(oldUser) return res.status(422).json({error: 'Email already exists.'})
         const newUser = await User.create({ email, password })
         // send signup verification email
+        const BASE_URL = req.protocol + "://" + req.get('host')
         const token = new Token({_userId: newUser._id })
-        await token.sendVerificationToken(newUser)
+        await token.sendVerificationToken(newUser, BASE_URL)
         // on successful email delivery
         return res.status(200).json({
             token: generateToken(newUser),

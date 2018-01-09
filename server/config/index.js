@@ -17,7 +17,7 @@ else {
         MAIL_HOST : mailHost,
         MAIL_PORT : mailPort,
         MAIL_USER : mailUser,
-        MAIL_POST : mailPass,
+        MAIL_PASS : mailPass,
         MAIL_FROM : mailFrom
     }
 }

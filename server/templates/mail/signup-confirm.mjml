@@ -12,7 +12,8 @@
                         padding="6px 16px"
                         color="white"
                         border-radius="4px"
-                        href="<%= url %>">
+                        href="{{ url }}"
+            >
                 Verify
             </mj-button>
             </mj-column>

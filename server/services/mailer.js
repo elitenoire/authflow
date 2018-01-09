@@ -1,17 +1,14 @@
 const fs = require('fs')
-//const { readFile, readdir } = require('fs')
 const path = require('path')
 const { promisify } = require('util')
 const { compile } = require('handlebars')
 const { mjml2html } = require('mjml')
 const nodemailer = require('nodemailer');
 const htmlToText = require('html-to-text')
-const { MAIL_HOST,MAIL_PORT, MAIL_PASS, MAIL_USER, MAIL_FROM } = require(../config)
+const { MAIL_HOST,MAIL_PORT, MAIL_PASS, MAIL_USER, MAIL_FROM } = require('../config')
 
 const readFile = promisify(fs.readFile)
-const readdir = promisify(fs.readdir)
-//const readFile = promisify(readFile)
-//const readdir = promisify(readdir)
+//const readdir = promisify(fs.readdir)
 
 // Mail Transport Service
 const transporter = nodemailer.createTransport({
@@ -21,16 +18,8 @@ const transporter = nodemailer.createTransport({
     logger: true,
     tls: { rejectUnauthorized: false }
 })
-    // const mailOptions = {
-    //     from: '"AuthFlow" <no-reply@authflow.herokuapp.com>',
-    //     to: user.email,
-    //     subject: 'Confirm your Authflow account with us',
-    //     text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' 
-    //     + req.headers.host + '\/auth\/confirm\/' + token.token + '.\n'
-    //     }        
-    // transporter.sendMail(mailOptions, function (err) {
-    //     // do something
-    // })
+
+// Load and compile email template
 const compileTemplate = async (templateName, data) => {
     const templatePath = path.join(__dirname, '../templates/mail/', `${templateName}.mjml`)
     try {
@@ -43,11 +32,13 @@ const compileTemplate = async (templateName, data) => {
         return html
     }
     catch(err) {
-        return err
+        //return err
+        console.log(err)
     }
 
 }
 
+// Mailer Core
 const sendEmail = async ({ from, to, subject, data, templateName }) => {
     // mailer options
     const mailOptions = {
@@ -58,25 +49,25 @@ const sendEmail = async ({ from, to, subject, data, templateName }) => {
     // Add subject as data if needed
     data.subject = subject
     
-    // Generate email
+    // Generate email html and text format
     try {
         const html = await compileTemplate(templateName, data)
         const text = htmlToText.fromString(html, {wordwrap: 80});        
+        // promisified mail sending
+        return new Promise((resolve, reject) => {
+            transporter.sendMail({...mailOptions, html, text }, (err, info) => {
+                if(err) reject(err)
+                //nodemaileer response
+                else resolve(info) 
+                }
+            )
+        })
     }
     catch(err) {
         return err
-    }  
-
-    // promisified mail sending
-    return new Promise((resolve, reject) => {
-        transporter.sendMail({...mailOptions, html, text}, (err, info) => {
-            if(err) reject(err)
-            //  console.log(`Message sent: #${info.messageId} ${info.response}`)
-            else resolve(info) 
-            }
-        )
-    }
-
+    } 
 }
 
 module.exports = { sendEmail }
+
+//TODO: Add support for template partials and batch emails
